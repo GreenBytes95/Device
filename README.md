@@ -6,6 +6,15 @@ Device
 
 Функции
 ===============
+Функции которые используются в Autoit будут помечатся в скобочках как - AutoIt.
 ```
-
+* InterfaceCreate(hWnd.l, device.l = Device::#DEVICE_GDI, begun.l = 1, AlphaFormat.l = 32, fps.l = 30, layred.l = 0, *hDevice.Device::Device = 0)
+  Создание контекста окна Device и интерфейса (ООП).
+  
+  hWnd.l - Handle Window
+  device.l - Константы типа device
+  |#DEVICE_GDI - Используется для отрисовки библиотека GDIPlus (GDI+)
+  |#DEVICE_D3D9 - Используется для отрисовки библиотека D3D9 (DirectX9)
+  |#DEVICE_NONE - Пустой контекст
+  
 ```
