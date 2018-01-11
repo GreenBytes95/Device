@@ -2,8 +2,6 @@
 
 Global event
 
-Global inifile$ = ".\data\fractal.ini"
-
 Structure sJump
   lx.l
   rx.l
@@ -15,7 +13,7 @@ EndStructure
 
 Global info.s, Angle.f, fX.l, fY.l, fX1.l, fY2.l, lX.l, lY.l, iPos.sJump
 
-Global xCount.l = 1
+Global xCount.l = 1, tLine.l, zColor.l
 
 Structure sLine
   x1.l
@@ -30,12 +28,12 @@ Device::Init()
 
 #FAKSIOMA   = "F++F++F++F"
 #FGen       = "-F++F-"
-#FLine      = 1
+#FLine      = 22
 #FStartX    = 0
 #FStartY    = 0
 #FStartA    = 45
 #FAngle     = 45
-#FColor     = $FFFFFF00
+#FColor     = $FF000000
 
 OpenWindow(0, 0, 0, 750, 450, "Example 20 - Fractal Gen", #PB_Window_ScreenCentered | #PB_Window_SizeGadget | #PB_Window_MinimizeGadget | #PB_Window_MaximizeGadget)
 WindowBounds(0, 750, 450, #PB_Default, #PB_Default)
@@ -45,10 +43,13 @@ Global *hDevice.Device::Device = Device::Create(WindowID(0), Device::#DEVICE_D3D
 Procedure XNext(HInfo.s = "")
   If HInfo <> ""
     Info = HInfo
+    tLine = #FLine
   Else
     Info = ReplaceString(info, "F", #FGen)
+    tLine - 2
+    If tLine < 1 : tLine = 1 : EndIf
   EndIf
-  
+  zColor = Random($FFFFFF, $202020)
   xCount = 1
   
   ReDim XLine.sLine(xCount)
@@ -67,8 +68,8 @@ Procedure XNext(HInfo.s = "")
     Select Mid(Info, i, 1)
       Case "F"
         
-        fX1 = #FLine * Sin(Angle * #PI/180.0)
-        fY1 = #FLine * Cos(Angle * #PI/180.0)
+        fX1 = tLine * Sin(Angle * #PI/180.0)
+        fY1 = tLine * Cos(Angle * #PI/180.0)
         
         ReDim XLine.sLine(xCount + 1)
         
@@ -133,11 +134,11 @@ Repeat
   If Device::FrameNext(*hDevice)
     Device::Clear(*hDevice, $FF000000)
     
-    lX = (*hDevice\INFO\RECT\right / 2) - iPos\w
-    lY = (*hDevice\INFO\RECT\bottom / 2) - iPos\h
+    lX = (*hDevice\INFO\RECT\right / 2); - (iPos\w / 2)
+    lY = (*hDevice\INFO\RECT\bottom / 2) - (iPos\h / 2)
     
     For i = 1 To xCount - 1
-      Device::LineA(*hDevice, lX + XLine(i)\x1, lY + XLine(i)\y1, lX + XLine(i)\x2, lY + XLine(i)\y2, #FColor)
+      Device::LineA(*hDevice, lX + XLine(i)\x1, lY + XLine(i)\y1, lX + XLine(i)\x2, lY + XLine(i)\y2, #FColor + zColor)
     Next
     
     If Device::UIButton(*hDevice, $FF404040, $FF606060, $FF202020, 5, 5, 80, 30, Device::#UI_STYLE_COLOR, Device::#STYLE_NONE) = 3
@@ -176,8 +177,8 @@ ForEver
 
 Device::Release()
 ; IDE Options = PureBasic 5.50 (Windows - x86)
-; CursorPosition = 32
-; FirstLine = 21
-; Folding = -
+; CursorPosition = 136
+; FirstLine = 120
+; Folding = 0
 ; EnableThread
 ; EnableXP
